@@ -1,0 +1,45 @@
+<nav class="navbar sidebar panel" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header panel-info">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <div class="panel-heading">
+                <h1 class="panel-title">Fossilmajig v<%=FossilMajig::VERSION%></h1>
+            </div>
+        </div>
+        <!-- Do not render the navbar if session is not set! -->
+        <% if !!session[:user_id] %>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="/dologin/<%=session[:user_id]%>">Login Link</a>
+                    </li>
+                    <li class="active">
+                        <a href="/">Home </a>
+                    </li>
+                    <li>
+                        <a href="/alias">Set Alias</a>
+                    </li>
+                    <li>
+                        <a href="/selfreport">Your fossil report</a>
+                    </li>
+                    <li>
+                        <a href="/allreport">All users report</a>
+                    </li>
+                    <li>
+                      <% if session[:alias].eql?('0') %>
+                        <a href="/logout">Logout <%=session[:user_id]%> </a>
+                      <% else %>
+                        <a href="/logout">Logout <%=session[:alias]%> </a>
+                      <% end %>
+                    </li>
+                </ul>
+            </div>
+        <% end %>
+    </div>
+</nav>

@@ -1,0 +1,61 @@
+<style>
+div.got {
+  background-color: #aaffaa;
+}
+div.not {
+  background-color: #ffaaaa;
+}
+div.rotated {
+  -ms-transform: rotate(315deg); /* IE 9 */
+  -webkit-transform: rotate(315deg); /* Chrome, Safari, Opera */
+  transform: rotate(315deg);
+}
+.container-scroll {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.container-scroll > .row {
+   width: 160vw; 
+}
+.container-scroll .col-md-1 {
+  width: 2vw;
+  text-align: center;
+}
+.container-scroll .col-md-2 {
+  width: 10vw;
+}
+</style>
+<div class="container-fluid container-scroll">
+    <div class="row">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+              <h1 class="panel-title">All Users Fossil Report</h1>
+            </div>
+            <div class="panel-body" id="metadata" style="display: block;">
+              <div class="row"><br/><br/><br/></div>
+              <div class="row">
+                <div class="col-md-2">User/Fossil</div>
+                <% fossils.each do |fossil| %>
+                  <div class="col-md-1 rotated"><%=fossil.name%></div>
+                <% end %>
+              </div>
+              <% users.each do |name, owned| %>
+                <div class="row">
+                  <div class="col-md-2"><%=name%></div>
+                   <% fossils.each do |fossil| %>
+                     <% if owned[fossil.id].eql?("1") %>
+                       <div class="col-md-1 got">
+                         <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-ok"></span>
+                       </div>
+                     <% else %>
+                       <div class="col-md-1 not">
+                         <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-remove"></span>
+                       </div>
+                     <% end %>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+        </div>
+    </div>
+</div>

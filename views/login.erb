@@ -1,0 +1,23 @@
+<div class="container">
+  <div class="row">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h2 class="panel-title">Login</h2>
+      </div>
+      <div class="panel-body">
+        Enter your UUID (32 character randomly-generated User ID)  below to proceed or press the 'NEW USER' button to generate one for you!<br/>
+        Make sure you save it for later!<br/>
+        <br/>
+        <form action='/loggedin' method='POST'>
+        <% if nouser.eql?(true) %>Sorry, can't find that username!<br/><% end %>
+        <input type='text' name='user_id' size='50' />
+        <button type="button" class="btn btn-sm btn-primary" onClick="submit();">Login</button>
+        </form>
+        <br/>
+        <form action='/newuser' method='POST'>
+        <button type="button" class="btn btn-sm btn-primary" onClick="submit();">New User</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

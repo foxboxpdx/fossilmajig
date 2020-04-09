@@ -1,0 +1,38 @@
+<style>
+div.got {
+  background-color: #aaffaa;
+}
+div.not {
+  background-color: #ffaaaa;
+}
+</style>
+<div class="container">
+    <div class="row">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+              <% if session[:alias].eql?('0') %>
+                <h1 class="panel-title">User <%=username%>'s Fossil Report</h1>
+              <% else %>
+                <h1 class="panel-title"><%=session[:alias]%>'s Fossil Report</h1>
+              <% end %>
+            </div>
+            <div class="panel-body" id="metadata" style="display: block;">
+              <div class="row">
+              <% counter = 0 %>
+              <% fossils.each do |fossil| %>
+                <% if owned[fossil.id].eql?("1") %>
+                  <% x = "got" %>
+                <% else %>
+                  <% x = "not" %>
+                <% end %>
+                <div class="col-md-3 <%=x%>"><%=fossil.name%></div>
+                <% counter += 1 %>
+                <% if counter.eql?(4) %>
+                  <% counter = 0 %>
+                  </div><div class="row">
+                <% end %>
+              <% end %>
+            </div>
+        </div>
+    </div>
+</div>

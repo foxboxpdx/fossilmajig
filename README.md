@@ -40,6 +40,10 @@ Important `rackup` flags:
 * 'Logout' clear the session cookie and returns to the login screen
 
 
+### Known Issues
+
+* The 'all users report' is...unreliably laid out.  I set it up on a screen with a weird 3000x2000 resolution and it took me like 3 hours just to get -that- to show up right so yeah any other resolutions it probably doesn't work right sorry.
+
 ### Coming Soon
 
 * A Dockerfile for easy containerization of the app

@@ -7,7 +7,7 @@ require_relative 'db'
 class FossilMajig < Sinatra::Base
   register Sinatra::Reloader
 
-  VERSION = "0.7.203"
+  VERSION = "0.8.0"
 
   set :root, File.dirname(__FILE__)
 
@@ -28,8 +28,9 @@ class FossilMajig < Sinatra::Base
     else
       username = userdata.username
       owned = binary_to_array(userdata.owned)
+      extra = binary_to_array(userdata.extra)
       session[:alias] = userdata.alias
-      erb :main, :locals => { :fossils => fossils, :username => username, :owned => owned }
+      erb :main, :locals => { :fossils => fossils, :username => username, :owned => owned, :extra => extra }
     end
   end
 
@@ -38,6 +39,7 @@ class FossilMajig < Sinatra::Base
   end
 
   post '/savedata' do
+    return params.to_s
     output = params.values.join('')
     userdata = User.first username: session[:user_id]
     userdata.owned = output

@@ -25,9 +25,14 @@ div.not {
                 <% else %>
                   <% x = "not" %>
                 <% end %>
-                <div class="col-md-3 <%=x%>"><%=fossil.name%></div>
+                <div class="col-md-2 <%=x%>">
+                  <%=fossil.name%>
+                  <% if !extra[fossil.id].eql?("0") %>
+                    <b>(<%=extra[fossil.id]%>)</b>
+                  <% end %>
+                </div>
                 <% counter += 1 %>
-                <% if counter.eql?(4) %>
+                <% if counter.eql?(6) %>
                   <% counter = 0 %>
                   </div><div class="row">
                 <% end %>

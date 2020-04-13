@@ -7,13 +7,15 @@ require_relative 'db'
 class FossilMajig < Sinatra::Base
   register Sinatra::Reloader
 
-  VERSION = "0.8.0"
+  VERSION = "0.8.8"
 
   set :root, File.dirname(__FILE__)
 
   use Rack::Session::Cookie, :key => 'rack.session',
                              :path => '/',
                              :secret => 'benchdtails'
+
+  DisplayUser = Struct.new(:username, :alias, :owned, :extra)
 
   def needs_auth
     return !session[:user_id]
@@ -27,8 +29,8 @@ class FossilMajig < Sinatra::Base
       erb :login, :locals => { :nouser => true }
     else
       username = userdata.username
-      owned = binary_to_array(userdata.owned)
-      extra = binary_to_array(userdata.extra)
+      owned = btoa(userdata.owned)
+      extra = btoa(userdata.extra)
       session[:alias] = userdata.alias
       erb :main, :locals => { :fossils => fossils, :username => username, :owned => owned, :extra => extra }
     end
@@ -39,10 +41,11 @@ class FossilMajig < Sinatra::Base
   end
 
   post '/savedata' do
-    return params.to_s
-    output = params.values.join('')
+    owned = params["owned"].values.join('')
+    extra = params["extra"].values.join('')
     userdata = User.first username: session[:user_id]
-    userdata.owned = output
+    userdata.owned = owned
+    userdata.extra = extra
     userdata.save
     redirect '/'
   end
@@ -80,25 +83,22 @@ class FossilMajig < Sinatra::Base
       erb :login, :locals => { :nouser => true }
     else
       username = userdata.username
-      owned = binary_to_array(userdata.owned)
+      owned = btoa(userdata.owned)
+      extra = btoa(userdata.extra)
       session[:alias] = userdata.alias
-      erb :selfreport, :locals => { :fossils => fossils, :username => username, :owned => owned }
+      erb :selfreport, :locals => { :fossils => fossils, :username => username, :owned => owned, :extra => extra }
     end
   end
 
   get '/allreport' do
     fossils = Fossil.all
     users = User.all
-    userhash = Hash.new()
+    data = Array.new()
     users.each do |u|
-      if u.alias.eql?("0")
-        n = u.username[0,7]
-        userhash[n] = binary_to_array(u.owned)
-      else
-        userhash[u.alias] = binary_to_array(u.owned)
-      end
+      x = DisplayUser.new(u.username, u.alias, btoa(u.owned), btoa(u.extra))
+      data.push(x)
     end
-    erb :allreport, :locals => { :fossils => fossils, :users => userhash }
+    erb :allreport, :locals => { :fossils => fossils, :users => data }
   end
     
   post '/loggedin' do
@@ -111,7 +111,7 @@ class FossilMajig < Sinatra::Base
     redirect '/'
   end
 
-  def binary_to_array(string)
+  def btoa(string)
     retval = string.split(//)
     if retval.length.eql?(0)
         foo = "0" * 73

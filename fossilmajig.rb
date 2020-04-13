@@ -7,7 +7,7 @@ require_relative 'db'
 class FossilMajig < Sinatra::Base
   register Sinatra::Reloader
 
-  VERSION = "0.8.8"
+  VERSION = "0.8.13"
 
   set :root, File.dirname(__FILE__)
 
@@ -92,7 +92,7 @@ class FossilMajig < Sinatra::Base
 
   get '/allreport' do
     fossils = Fossil.all
-    users = User.all
+    users = User.all({:alias.not => '0'})
     data = Array.new()
     users.each do |u|
       x = DisplayUser.new(u.username, u.alias, btoa(u.owned), btoa(u.extra))
@@ -119,9 +119,4 @@ class FossilMajig < Sinatra::Base
     end
     retval.unshift("0")
   end
-
-  def array_to_binary(arr)
-    arr.join
-  end
-
 end

@@ -1,0 +1,46 @@
+<style>
+div.got {
+  background-color: #aaffaa;
+}
+div.not {
+  background-color: #ffaaaa;
+}
+div.linerow {
+  border: 1px solid;
+  border-bottom: 0px;
+}
+.container div.linerow:last-child {
+  border-bottom: 1px solid;
+}
+</style>
+<div class="container">
+    <div class="row">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+              <% if user.alias.eql?('0') %>
+                <h1 class="panel-title">User <%=user.username%> - Needed Fossils</h1>
+              <% else %>
+                <h1 class="panel-title"><%=user.alias%> - Needed Fossils</h1>
+              <% end %>
+            </div>
+            <div class="panel-body" id="metadata" style="display: block;">
+              <div class="row linerow">
+                <div class="col-md-3"><h3>Fossil Name</h3></div>
+                <div class="col-md-3"><h3>Who's got it?</h3></div>
+                <div class="col-md-6">&nbsp;</div>
+              </div>
+              <% data.each do |d| %>
+              <div class="row linerow">
+                <div class="col-md-3"><%=d.fossil%></div>
+                <% if d.user.length.eql?(0) %>
+                  <div class="col-md-3 not">Sorry, nobody got it</div>
+                <% else %>
+                  <div class="col-md-3 got"><%=d.user.join(' - ')%></div>
+                <% end %>
+                <div class="col-md-6">&nbsp;</div>
+              </div>
+              <% end %>
+            </div>
+        </div>
+    </div>
+</div>

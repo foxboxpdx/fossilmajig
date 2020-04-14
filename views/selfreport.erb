@@ -10,25 +10,25 @@ div.not {
     <div class="row">
         <div class="panel panel-info">
             <div class="panel-heading">
-              <% if session[:alias].eql?('0') %>
-                <h1 class="panel-title">User <%=username%>'s Fossil Report</h1>
+              <% if user.alias.eql?('0') %>
+                <h1 class="panel-title">User <%=user.username%>'s Fossil Report</h1>
               <% else %>
-                <h1 class="panel-title"><%=session[:alias]%>'s Fossil Report</h1>
+                <h1 class="panel-title"><%=user.alias%>'s Fossil Report</h1>
               <% end %>
             </div>
             <div class="panel-body" id="metadata" style="display: block;">
               <div class="row">
               <% counter = 0 %>
               <% fossils.each do |fossil| %>
-                <% if owned[fossil.id].eql?("1") %>
+                <% if user.owned[fossil.id].eql?("1") %>
                   <% x = "got" %>
                 <% else %>
                   <% x = "not" %>
                 <% end %>
                 <div class="col-md-2 <%=x%>">
                   <%=fossil.name%>
-                  <% if !extra[fossil.id].eql?("0") %>
-                    <b>(<%=extra[fossil.id]%>)</b>
+                  <% if !user.extra[fossil.id].eql?("0") %>
+                    <b>(<%=user.extra[fossil.id]%>)</b>
                   <% end %>
                 </div>
                 <% counter += 1 %>

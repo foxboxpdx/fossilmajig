@@ -7,7 +7,7 @@ require_relative 'db'
 class FossilMajig < Sinatra::Base
   register Sinatra::Reloader
 
-  VERSION = "0.8.13"
+  VERSION = "0.9.19"
 
   set :root, File.dirname(__FILE__)
 
@@ -16,6 +16,7 @@ class FossilMajig < Sinatra::Base
                              :secret => 'benchdtails'
 
   DisplayUser = Struct.new(:username, :alias, :owned, :extra)
+  WhoGot = Struct.new(:id, :fossil, :user)
 
   def needs_auth
     return !session[:user_id]
@@ -24,15 +25,13 @@ class FossilMajig < Sinatra::Base
   get '/' do
     redirect '/login' if needs_auth
     fossils = Fossil.all
-    userdata = User.first username: session[:user_id]
-    if userdata.nil?
+    u = User.first username: session[:user_id]
+    if u.nil?
       erb :login, :locals => { :nouser => true }
     else
-      username = userdata.username
-      owned = btoa(userdata.owned)
-      extra = btoa(userdata.extra)
-      session[:alias] = userdata.alias
-      erb :main, :locals => { :fossils => fossils, :username => username, :owned => owned, :extra => extra }
+      x = DisplayUser.new(u.username, u.alias, btoa(u.owned), btoa(u.extra))
+      session[:alias] = u.alias
+      erb :main, :locals => { :fossils => fossils, :user => x }
     end
   end
 
@@ -78,15 +77,12 @@ class FossilMajig < Sinatra::Base
 
   get '/selfreport' do
     fossils = Fossil.all
-    userdata = User.first username: session[:user_id]
-    if userdata.nil?
+    u = User.first username: session[:user_id]
+    if u.nil?
       erb :login, :locals => { :nouser => true }
     else
-      username = userdata.username
-      owned = btoa(userdata.owned)
-      extra = btoa(userdata.extra)
-      session[:alias] = userdata.alias
-      erb :selfreport, :locals => { :fossils => fossils, :username => username, :owned => owned, :extra => extra }
+      x = DisplayUser.new(u.username, u.alias, btoa(u.owned), btoa(u.extra))
+      erb :selfreport, :locals => { :fossils => fossils, :user => x }
     end
   end
 
@@ -100,6 +96,31 @@ class FossilMajig < Sinatra::Base
     end
     erb :allreport, :locals => { :fossils => fossils, :users => data }
   end
+
+  get '/whatuneed' do
+    fossils = Fossil.all
+    users = User.all({:alias.not => '0'})
+    currentuser = User.first username: session[:user_id]
+    x = DisplayUser.new(currentuser.username, currentuser.alias, btoa(currentuser.owned), 0)
+    data = Array.new()
+    # Find the IDs of the fossils the user needs
+    fossils.each do |f|
+      if x.owned[f.id].eql?("0")
+        data.push(WhoGot.new(f.id, f.name, Array.new()))
+      end
+    end
+    # Iterate through users to see who got wot
+    users.each do |u|
+      extra = btoa(u.extra)
+      data.each do |d|
+        if !extra[d.id].eql?("0")
+          d.user.push(u.alias)
+        end
+      end
+    end
+    # Ok I think data has everything now?
+    erb :whatuneed, :locals => { :user => x, :data => data }
+ end
     
   post '/loggedin' do
     session[:user_id] = params["user_id"]

@@ -11,10 +11,10 @@ div.row {
     <div class="row">
         <div class="panel panel-info">
             <div class="panel-heading">
-              <% if session[:alias].eql?('0') %>
-                <h1 class="panel-title">User <%=username%>'s Fossils</h1>
+              <% if user.alias.eql?('0') %>
+                <h1 class="panel-title">User <%=user.username%>'s Fossils</h1>
               <% else %>
-                <h1 class="panel-title"><%=session[:alias]%>'s Fossils</h1>
+                <h1 class="panel-title"><%=user.alias%>'s Fossils</h1>
               <% end %>
             </div>
             <div class="panel-body" id="metadata" style="display: block;">
@@ -33,7 +33,7 @@ div.row {
               <% fossils.each do |fossil| %>
                 <div class="row">
                  <div class="col-md-2">
-                  <% if owned[fossil.id].eql?("1") %>
+                  <% if user.owned[fossil.id].eql?("1") %>
                      <input type="radio" value="1" name="owned[<%=fossil.id%>]" checked>Y
                      <input type="radio" value="0" name="owned[<%=fossil.id%>]">N
                   <% else %>
@@ -42,7 +42,7 @@ div.row {
                   <% end %>
                  </div>
                  <div class="col-md-2">
-                   <input type="text" size="1" name="extra[<%=fossil.id%>]" value="<%=extra[fossil.id]%>">
+                   <input type="text" size="1" name="extra[<%=fossil.id%>]" value="<%=user.extra[fossil.id]%>">
                  </div>
                  <div class="col-md-8">
                   <h4><%=fossil.name%></h4>
